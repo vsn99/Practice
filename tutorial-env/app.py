@@ -9,8 +9,6 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
 #============= test user for sending the mail =============================
-
-
 import smtplib
 server = smtplib.SMTP('smtp.gmail.com',587)
 server.starttls()
@@ -180,10 +178,10 @@ def check_table():
         user_list = []
         for username,password,role in user:
             user_dict = {
-                'username': username,  # Replace with the actual column names from your table
+                'username': username,  
                 'password': password,
-                'role': role  # Replace with the actual column names from your table
-                # Add other fields as needed
+                'role': role  
+                
             }
             user_list.append(user_dict)
 
@@ -191,10 +189,7 @@ def check_table():
 
         
         
-        # current_user_id = get_jwt_identity()
-        # response = request.get_json()
-        # if response.status_code != 200:
-        #     return jsonify({'error': response.json()['message']}), response.status_code
+     
 
 
     except Exception as e:
@@ -424,12 +419,10 @@ def handle_francs():
 
 #======================================================================================================================
 
-# Start flask application.
 if __name__ == '__main__':
     app.run(host="0.0.0.0",port=5000)
 
 
-# Shut down the connection.
 # cursor.execute("Show tables;")
 # print(cursor.fetchall())
 conn.close()
