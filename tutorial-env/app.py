@@ -13,7 +13,9 @@ import smtplib
 server = smtplib.SMTP('smtp.gmail.com',587)
 server.starttls()
 
-server.login('testuserfordemo1@gmail.com','rqqnwwsjcphfyblr')
+senderEmail = 'testuserfordemo1@gmail.com'
+
+server.login(senderEmail,'rqqnwwsjcphfyblr')
 
 
 msg = MIMEMultipart()
@@ -80,7 +82,7 @@ def register():
         if data['username'] in existing_user:
             body = "username already exists" 
             msg.attach(MIMEText(body,'plain'))
-            server.sendmail('testuserfordemo1@gmail.com',email,msg.as_string())                                            ################                                          
+            server.sendmail(senderEmail,email,msg.as_string())                                            ################                                          
             return jsonify({'error': 'username already exists'}), 400
         print("after 1st cursor")
 
@@ -92,7 +94,7 @@ def register():
         cursor.close()
         body = "User registered successfully" 
         msg.attach(MIMEText(body,'plain'))
-        server.sendmail('testuserfordemo1@gmail.com',email,msg.as_string())                                            ################
+        server.sendmail(senderEmail,email,msg.as_string())                                            ################
         return jsonify({'message': 'User registered successfully'}), 201
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -122,7 +124,7 @@ def login():
             
             body = "Login successful" 
             msg.attach(MIMEText(body,'plain'))
-            server.sendmail('testuserfordemo1@gmail.com',email,msg.as_string())               ################         
+            server.sendmail(senderEmail,email,msg.as_string())               ################         
 
             response.set_cookie('token', access_token)
 
@@ -131,7 +133,7 @@ def login():
         else:
             body = "Invalid username or password" 
             msg.attach(MIMEText(body,'plain'))
-            server.sendmail('testuserfordemo1@gmail.com',email,msg.as_string())  
+            server.sendmail(senderEmail,email,msg.as_string())  
             return jsonify({'error': 'Invalid username or password'}), 401
 
     except Exception as e:
@@ -163,7 +165,7 @@ def roles_required(*required_roles):
 
 
 
-@app.route('/check_table', methods=['GET'])
+@app.route('/masterData', methods=['GET'])
 @jwt_required()
 @roles_required('admin')
 def check_table():
@@ -198,7 +200,7 @@ def check_table():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-@app.route('/check_user', methods=['GET'])
+@app.route('/loggedinUser', methods=['GET'])
 @jwt_required()
 @roles_required('admin')
 def protected():
