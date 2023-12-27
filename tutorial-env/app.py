@@ -9,12 +9,12 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
 #============= test user for sending the mail =============================
+
+
 import smtplib
 server = smtplib.SMTP('smtp.gmail.com',587)
 server.starttls()
-
-senderEmail = 'testuserfordemo1@gmail.com'
-
+senderEmail ='testuserfordemo1@gmail.com' 
 server.login(senderEmail,'rqqnwwsjcphfyblr')
 
 
@@ -22,7 +22,7 @@ msg = MIMEMultipart()
 
 # Set the sender, recipient, and subject
 msg['From'] = 'testuserfordemo1@gmail.com'
-msg['To'] = '   '
+msg['To'] = ''
 msg['Subject'] = 'Subject: Your Authentication Status to the application'
 
 
@@ -165,7 +165,7 @@ def roles_required(*required_roles):
 
 
 
-@app.route('/masterData', methods=['GET'])
+@app.route('/check_table', methods=['GET'])
 @jwt_required()
 @roles_required('admin')
 def check_table():
@@ -200,7 +200,7 @@ def check_table():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-@app.route('/loggedinUser', methods=['GET'])
+@app.route('/check_user', methods=['GET'])
 @jwt_required()
 @roles_required('admin')
 def protected():
