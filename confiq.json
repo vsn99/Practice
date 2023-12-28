@@ -1,0 +1,14 @@
+{
+    "database": {
+        "host": "database.clau0466sb6g.us-east-1.rds.amazonaws.com",
+        "user": "admin",
+        "password": "12345678",
+        "database": "database1"
+    },
+    "email": {
+        "smtp_server": "smtp.gmail.com",
+        "smtp_port": 587,
+        "sender_email": "testuserfordemo1@gmail.com",
+        "sender_password": "rqqnwwsjcphfyblr"
+    }
+}

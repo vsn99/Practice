@@ -7,20 +7,24 @@ import requests,json,logging
 from flask_jwt_extended import JWTManager, jwt_required, create_access_token, get_jwt_identity
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+import json
+
+with open("config.json") as config_file:
+    jwt_config = json.load(config_file)["jwt"]
 
 #============= test user for sending the mail =============================
 import smtplib
 server = smtplib.SMTP('smtp.gmail.com',587)
 server.starttls()
-senderEmail ='testuserfordemo1@gmail.com' 
-server.login(senderEmail,'rqqnwwsjcphfyblr')
+
+server.login('testuserfordemo1@gmail.com','rqqnwwsjcphfyblr')
 
 
 msg = MIMEMultipart()
 
 # Set the sender, recipient, and subject
 msg['From'] = 'testuserfordemo1@gmail.com'
-msg['To'] = ''
+msg['To'] = '   '
 msg['Subject'] = 'Subject: Your Authentication Status to the application'
 
 
@@ -31,20 +35,23 @@ msg['Subject'] = 'Subject: Your Authentication Status to the application'
 # Configuration for flask application.
 app = Flask(__name__)
 
-app.config['JWT_SECRET_KEY'] = 'your_jwt_secret_key'  # Change this to a secure secret key
+
 app.config['JWT_TOKEN_LOCATION'] = ['headers', 'cookies']
 app.config['JWT_COOKIE_CSRF_PROTECT'] = False  # Disable CSRF protection for cookies
 app.config['JWT_ACCESS_COOKIE_NAME'] = 'token'
 
 
 # Creation of global cursor.
-conn = mysql.connector.connect(
-        host="database.clau0466sb6g.us-east-1.rds.amazonaws.com",
-        user="admin",
-        password="12345678",
-        database="database1"
-)
-cursor = conn.cursor()
+with open("config.json") as config_file:
+    config_data = json.load(config_file)["database"]
+
+    self.conn = mysql.connector.connect(
+                host=config_data["host"],
+                user=config_data["user"],
+                password=config_data["password"],
+                database=config_data["database"]
+            )
+    self.cursor = self.conn.cursor()
 
 jwt = JWTManager(app)
 
@@ -72,15 +79,14 @@ def register():
         roles = data['roles']  # Optional roles parameter
         print(roles)
         email = username
-        # Check if the username and email are available
-        # cursor.execute(f"SELECT * FROM users WHERE email = {email}")
+        
         qu = f"SELECT username FROM USER"
         cursor.execute(qu)
         existing_user = cursor.fetchall()
         if data['username'] in existing_user:
             body = "username already exists" 
             msg.attach(MIMEText(body,'plain'))
-            server.sendmail(senderEmail,email,msg.as_string())                                            ################                                          
+            server.sendmail('testuserfordemo1@gmail.com',email,msg.as_string())                                            ################                                          
             return jsonify({'error': 'username already exists'}), 400
         print("after 1st cursor")
 
@@ -92,7 +98,7 @@ def register():
         cursor.close()
         body = "User registered successfully" 
         msg.attach(MIMEText(body,'plain'))
-        server.sendmail(senderEmail,email,msg.as_string())                                            ################
+        server.sendmail('testuserfordemo1@gmail.com',email,msg.as_string())                                            ################
         return jsonify({'message': 'User registered successfully'}), 201
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -122,7 +128,7 @@ def login():
             
             body = "Login successful" 
             msg.attach(MIMEText(body,'plain'))
-            server.sendmail(senderEmail,email,msg.as_string())               ################         
+            server.sendmail('testuserfordemo1@gmail.com',email,msg.as_string())               ################         
 
             response.set_cookie('token', access_token)
 
@@ -131,7 +137,7 @@ def login():
         else:
             body = "Invalid username or password" 
             msg.attach(MIMEText(body,'plain'))
-            server.sendmail(senderEmail,email,msg.as_string())  
+            server.sendmail('testuserfordemo1@gmail.com',email,msg.as_string())  
             return jsonify({'error': 'Invalid username or password'}), 401
 
     except Exception as e:
@@ -178,10 +184,10 @@ def check_table():
         user_list = []
         for username,password,role in user:
             user_dict = {
-                'username': username,  
+                'username': username,  # Replace with the actual column names from your table
                 'password': password,
-                'role': role  
-                
+                'role': role  # Replace with the actual column names from your table
+                # Add other fields as needed
             }
             user_list.append(user_dict)
 
@@ -189,8 +195,7 @@ def check_table():
 
         
         
-     
-
+        
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -218,8 +223,6 @@ def get_add():
     try:
         current_user_id = get_jwt_identity()
         response = request.get_json()
-        # if response.status_code != 200:
-        #     return jsonify({'error': response.json()['message']}), response.status_code
         num1 = response.get('a')
         num2 = response.get('b')
 
@@ -244,9 +247,6 @@ def get_subtract():
     try:
         current_user_id = get_jwt_identity()
         response = request.get_json()
-        # if response.status_code != 200:
-        #     return jsonify({'error': response.json()['message']}), response.status_code
-
         num1 = response.get('a')
         num2 = response.get('b')
 
@@ -273,9 +273,6 @@ def multiply():
     try:
         current_user_id = get_jwt_identity()
         response = request.get_json()
-        # if response.status_code != 200:
-        #     return jsonify({'error': response.json()['message']}), response.status_code
-
         num1 = response.get('a')
         num2 = response.get('b')
 
@@ -302,8 +299,6 @@ def division():
     try:
         current_user_id = get_jwt_identity()
         response = request.get_json()
-        # if response.status_code != 200:
-        #     return jsonify({'error': response.json()['message']}), response.status_code
 
         num1 = response.get('a')
         num2 = response.get('b')
@@ -419,10 +414,12 @@ def handle_francs():
 
 #======================================================================================================================
 
+# Start flask application.
 if __name__ == '__main__':
     app.run(host="0.0.0.0",port=5000)
 
 
+# Shut down the connection.
 # cursor.execute("Show tables;")
 # print(cursor.fetchall())
 conn.close()
