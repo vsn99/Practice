@@ -10,5 +10,8 @@
         "smtp_port": 587,
         "sender_email": "testuserfordemo1@gmail.com",
         "sender_password": "rqqnwwsjcphfyblr"
+    },
+    "jwt": {
+        "secret_key": "your_jwt_secret_key"
     }
 }
