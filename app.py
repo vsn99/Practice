@@ -6,7 +6,6 @@ from auth import roles_required
 
 app = Flask(__name__)
 
-# ... Other configurations
 
 app.register_blueprint(user_bp)
 app.register_blueprint(calc_bp)

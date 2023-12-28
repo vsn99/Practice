@@ -62,9 +62,7 @@ def multiply():
     try:
         current_user_id = get_jwt_identity()
         response = request.get_json()
-        # if response.status_code != 200:
-        #     return jsonify({'error': response.json()['message']}), response.status_code
-
+        
         num1 = response.get('a')
         num2 = response.get('b')
 
@@ -90,9 +88,7 @@ def division():
     try:
         current_user_id = get_jwt_identity()
         response = request.get_json()
-        # if response.status_code != 200:
-        #     return jsonify({'error': response.json()['message']}), response.status_code
-
+       
         num1 = response.get('a')
         num2 = response.get('b')
 
